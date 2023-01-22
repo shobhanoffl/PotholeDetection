@@ -125,8 +125,26 @@ def detect(save_img=False):
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
                     if save_img or view_img:  # Add bbox to image
-                        label = f'{names[int(cls)]} {conf:.2f}'
-                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
+                        # (int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])
+
+                        # custWd = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                        # custHt = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                        # totArea=custWd*custHt
+                        custArea=(int(xyxy[2])-int(xyxy[0]))*(int(xyxy[3])-int(xyxy[1]))
+                        custPer=(custArea)/100
+                        custLabel='Less Severe'
+                        if(custPer<30 and custPer>0):
+                          custLabel='Less Severe'
+                        elif(custPer<50 and custPer>=30):
+                          custLabel='Severe'
+                        elif(custPer<75 and custPer>=50):
+                          custLabel='Highly Severe'
+                        elif(custPer>=75):
+                          custLabel='Dangerous'
+                        # actualLabel = f'{names[int(cls)]} {conf:.2f}'
+                        # label = 'Severity Level is =' + str(custPer)
+                        # shobhan's comment -> Add custom label here
+                        # plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
 
             # Print time (inference + NMS)
             print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
